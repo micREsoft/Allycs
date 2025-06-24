@@ -36,7 +36,7 @@ public:
 
 	BOOL SubclassWindow(HWND hWnd)
 	{
-		ATLASSERT(m_hWnd == NULL);
+		ATLASSERT(this->m_hWnd == NULL);
 		ATLASSERT(::IsWindow(hWnd));
 		BOOL bRet = CWindowImpl< T, TBase, TWinTraits >::SubclassWindow(hWnd);
 		if( bRet ) _Init();
@@ -45,7 +45,7 @@ public:
 
 	NUM_T GetValue() const
 	{
-		ATLASSERT(::IsWindow(m_hWnd));
+		ATLASSERT(::IsWindow(this->m_hWnd));
 
 		TCHAR String[STRSIZE] = { 0 };
 		this->GetWindowText(String, _countof(String));
@@ -54,7 +54,7 @@ public:
 
 	void SetValue(NUM_T Num, bool Fill = true)
 	{
-		ATLASSERT(::IsWindow(m_hWnd));
+		ATLASSERT(::IsWindow(this->m_hWnd));
 
 		TCHAR String[STRSIZE] = { 0 };
 		_NumToString(Num, String, Fill);
@@ -65,7 +65,7 @@ public:
 
 	void _Init()
 	{
-		ATLASSERT(::IsWindow(m_hWnd));
+		ATLASSERT(::IsWindow(this->m_hWnd));
 
 		this->SendMessage(EM_LIMITTEXT, DIGITS, 0);
 	}

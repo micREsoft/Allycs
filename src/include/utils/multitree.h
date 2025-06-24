@@ -89,7 +89,7 @@ public:
 
 	DWORD SetExtendedTreeStyle(DWORD dwStyle)
 	{
-		ATLASSERT(!m_ctrlTree.IsWindow());   // Before control is created, please!
+		ATLASSERT(!this->IsWindow());   // Before control is created, please!
 
 		DWORD dwOldStyle = m_dwTreeStyle;
 		m_dwTreeStyle = dwStyle;
