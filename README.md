@@ -1,178 +1,182 @@
-Scylla - x64/x86 Imports Reconstruction
-=======================================
+<h1 align="center">Allycs</h1>
+<p align="center"><i>Import Table Reconstructor powered by SysCaller (Scylla rebuild)</i></p>
 
-ImpREC, CHimpREC, Imports Fixer... this are all great tools to rebuild an import table, 
-but they all have some major disadvantages, so I decided to create my own tool for this job.
+---
 
-Scylla's key benefits are:
+## About
 
- - x64 and x86 support
- - full unicode support
- - written in C/C++
- - plugin support
- - works great with Windows 7
+**Allycs** is a modernized Scylla rebuild using [SysCaller](https://github.com/SysCallerSDK/SysCaller) for native syscall powered PE import reconstruction. It avoids traditional API hooks by directly invoking syscalls, making it useful for stealthy dumping.
 
-This tool was designed to be used with Windows 7 x64, so it is recommend to use this operating system. 
-But it may work with XP and Vista, too.
+---
 
-Source code is licensed under GNU GENERAL PUBLIC LICENSE v3.0
+## Features
 
+Whats new: 
+- (SysCaller only supports x64)
+- Native syscall usage (WinAPI-less execution)
+- Added "Dont Compact Raw Data"
+- Removed alot of bloat
+- Powered by [SysCaller SDK](https://github.com/SysCallerSDK/SysCaller)
 
-Known Bugs
-----------
+---
 
-### Windows 7 x64
+## Requirements
 
-Sometimes the API kernel32.dll GetProcAddress cannot be resolved, because the IAT has an entry from apphelp.dll
-Solution? I don't know
+### Visual Studio 2022  
+Ensure you have C++20 toolset enabled.
 
-### Only Windows XP x64:
+### [SysCaller](https://github.com/SysCallerSDK/SysCaller)
+You will need to build SysCaller with the proper syscalls, more info below.
 
-Windows XP x64 has some API bugs. 100% correct imports reconstruction is impossible.
-If you still want to use XP x64, here are some hints:
+### [vcpkg](https://github.com/microsoft/vcpkg)
+Install vcpkg if not already installed, then run:
 
-* EncodePointer/DecodePointer exported by kernel32.dll have both the same VA.
-  Scylla, CHimpREC and other tools cannot know which API is correct. You need to fix this manually.
-  Your fixed dump will probably run fine on XP but crash on Vista/7.
+```bash
+vcpkg install distorm:x64-windows-static tinyxml2:x64-windows-static wtl:x64-windows-static
+```
 
-### ImpREC plugin support:
+---
 
-Some ImpREC Plugins don't work with Windows Vista/7 because they don't "return 1" in the DllMain function.
+## Build Instructions
 
+### Step 1. Build Requires Syscalls via SysCaller
 
-Keyboard Shortcuts
-------------------
+1. Clone and open SysCaller via PY BuildTools first
 
-- CTRL + D: [D]ump
-- CTRL + F: [F]ix Dump
-- CTRL + R: PE [R]ebuild
-- CTRL + O: L[o]ad Tree
-- CTRL + S: [S]ave Tree
-- CTRL + T: Auto[t]race
-- CTRL + G: [G]et Imports
-- CTRL + I: [I]AT Autosearch
+2. Ensure the following syscall stubs are selected under the Integrity Tab:
 
+```plaintext
+SysAllocateVirtualMemoryEx
+SysClose
+SysCreateSection
+SysCreateThreadEx
+SysDuplicateObject
+SysFreeVirtualMemory
+SysGetContextThread
+SysMapViewOfSection
+SysOpenProcess
+SysOpenSymbolicLinkObject
+SysOpenThread
+SysProtectVirtualMemory
+SysQueryInformationFile
+SysQueryInformationProcess
+SysQueryInformationThread
+SysQueryObject
+SysQuerySymbolicLinkObject
+SysQuerySystemInformation
+SysQueryVirtualMemory
+SysResumeProcess
+SysResumeThread
+SysSetContextThread
+SysSetInformationThread
+SysSuspendProcess
+SysSuspendThread
+SysTerminateProcess
+SysUnmapViewOfSection
+SysWriteVirtualMemory
+```
 
-Changelog
----------
+3. After that run the Validation/Compatibility checks.
 
-Version 0.9.8
+4. **Important**: These stubs must be the default, non obfuscated versions.  
+   Obfuscated stubs currently break compatibility with Allycs.
 
-- Bugfixes for x64, IAT Search
-- diStorm3 update from Jan 3rd 2015
+5. Now open SysCaller.sln via Visual Studio 2022
 
-Version 0.9.7
+6. Set build to `Release`, platform to `x64`, and C++ standard to **C++20** (If not already)
 
-- Fixed bug bad allocation https://forum.tuts4you.com/topic/36458-scylla-097b-crash-on-pep-50-unpackme/
-- Fixed bug https://forum.tuts4you.com/topic/35352-scylla-themida-v2180-iat-problem/
-- Fixed bug with api selection https://forum.tuts4you.com/topic/35912-scylla-097-problem-acprotect/
-- Included .NET binary + source, ScyllaToImprecTree to convert the api export to imprec
+7. Build the project to generate `SysCaller.lib`
 
-Version 0.9.6
+---
 
-- improved iat search
-- fixed bug in api resolve engine
-- new option: parse APIs always from disk -> slower, useful against pe header modifications
+### Step 2. Integrate SysCaller Output
 
-Version 0.9.5
+- Copy the built files from SysCaller into Allycs:
 
-- Fixed virtual device bug caused by QueryDosDeviceW bug
-- improved process lister
-- improved module lister
-- improved dump name
-- improved IAT parser
+    ```
+    SysCaller.lib     → sdk/SysCaller/lib
+    SysFunctions.h    → sdk/SysCaller/include/Sys
+    ```
 
-Version 0.9.4 Final
+---
 
-- direct import scanner (LEA, MOV, PUSH, CALL, JMP) + fixer with 2 fix methods
-- create new iat in section
-- fixed various bugs 
+### Step 3. Build Allycs
 
-Version 0.9.3
+- Open `Allycs.sln` in Visual Studio 2022
+- Set to `x64` & `Release` Mode if not already  
+- Build the `Allycs` project  
+- Output binary: `build\x64\Release\Allycs.exe`
 
-- new dll function: iat search
-- new dll function: iat fix auto
+---
 
-Version 0.9.2
+## Usage
 
-- Pick DLL -> Set DLL Entrypoint
-- Advanced IAT Search Algorithm (Enable/Disable it in Options), thanks to ahmadmansoor
-- Fixed bug in Options
-- Added donate information, please feel free to donate some BTC to support this project
+Run Allycs and have fun! Enjoy this modern rebuild of Scylla with Syscalls.
 
-Version 0.9.1
+---
 
-- Fixed virtual device bug
-- Fixed 2 minor bugs
+### Notes
 
-Version 0.9
+If you want to integrate **Allycs into x64dbg**, you’ll need to modify x64dbg to call Allycs instead of Scylla. (After doing so follow along below)
 
-- updated to distorm v3.3
-- added application exception handler
-- fixed bug in dump engine
-- improved "suspend process" feature, messagebox on exit
+#### Step 1. Convert Allycs from `.exe` to `.dll`
 
-Version 0.8
+1. Open the Allycs project in Visual Studio 2022
+2. In the project settings:
+    - Change the output type from **Console Application** to **Dynamic Link Library**
+    - Set `Configuration Type` to `Dynamic Library (.dll)`
 
-- added OriginalFirstThunk support. Thanks to p0c
-- fixed malformed dos header bug
-- NtCreateThreadEx added infos from waliedassar, thanks! 
+#### Step 2. Create Allycs Export Definition File
 
-Version 0.7 Beta
+Create a new file in your project root named:
 
-- fixed bug Overlapped Headers
-- fixed bug SizeOfOptionalHeader
-- added feature: suspend process for dumping, more information
-- improved disassembler
-- fixed various bugs
+- allycs_export_definitions.def
 
-Version 0.6b
+```def
+LIBRARY Allycs
+EXPORTS
+    DumpProcessW @ 1
+    AllycsDumpCurrentProcessW @2
+    AllycsDumpCurrentProcessA @3
+    AllycsDumpProcessW        @4
+    AllycsDumpProcessA        @5
+    AllycsRebuildFileW        @6
+    AllycsRebuildFileA        @7
+    AllycsVersionInformationW @8
+    AllycsVersionInformationA @9
+    AllycsVersionInformationDword @10
+    AllycsStartGui            @11
+    AllycsIatSearch           @12
+    AllycsIatFixAutoW         @13
+```
 
-- internal code changes
-- added option: fix iat and oep
+#### Step 3. Link the .def File in Visual Studio
 
-Version 0.6a
+1. Right click the Allycs project > Properties
 
-- fixed buffer to small bug in dump memory
+2. Navigate to: Linker > Input
 
-Version 0.6
+3. Set the Module Definition File to:
 
-- added dump memory regions
-- added dump pe sections -> you can edit some values in the dialog
-- improved dump engine with intelligent dumping
-- improved pe rebuild engine -> removed yoda's code
-- fixed various bugs
+```plaintext
+allycs_export_definitions.def
+```
 
-Version 0.5a:
+- Build the DLL. Now you can now load Allycs.dll from x64dbg in place of Scylla.dll!
 
-- fixed memory leak
-- improved IAT search
+## License
 
-Version 0.5:
+This project is licensed under **GNU General Public License v3.0** — see [LICENSE](LICENSE) for details.
 
-- added save/load import tree feature
-- multi-select in tree view
-- fixed black icons problem in tree view
-- added keyboard shortcuts
-- dll dump + dll dump fix now working
-- added support for scattered IATs
-- pre select target path in open file dialogs
-- improved import resolving engine with api scoring
-- api selection dialog
-- minor bug fixes and improvements
+---
 
-Version 0.4:
+## Disclaimer
 
- - GUI code improvements
- - bug fixes
- - imports by ordinal
+Allycs is intended **strictly for educational and research use**.  
+The author assumes no responsibility for any misuse or damage caused by this software.
 
-Version 0.3a:
+---
 
- - Improved import resolving
- - fixed buffer overflow errors
-
-Version 0.3:
-
- - ImpREC plugin support
- - minor bug fix
+<p align="center">
+  <i>Built on the foundation of Scylla. Reinforced with native syscalls.</i>
+</p>
