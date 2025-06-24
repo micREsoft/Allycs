@@ -1,0 +1,293 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{710434C9-FC4B-4F1D-B318-E10ADC78499F}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>Allycs</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+    <IncludePath>$(SolutionDir)WTL\Include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(SolutionDir)WTL\Include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+    <IncludePath>$(SolutionDir)WTL\Include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(SolutionDir)WTL\Include;$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\Intermediate\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <VcpkgUseStatic>true</VcpkgUseStatic>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>GeneratedFiles\$(ConfigurationName);GeneratedFiles;$(SolutionDir)tinyxml;$(SolutionDir)diStorm\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(SolutionDir)$(Platform)\$(Configuration)\diStorm.lib;$(SolutionDir)$(Platform)\$(Configuration)\tinyxml.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalManifestDependencies>type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' </AdditionalManifestDependencies>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapFileName>$(TargetDir)$(TargetName).map</MapFileName>
+      <EntryPointSymbol>
+      </EntryPointSymbol>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>GeneratedFiles\$(ConfigurationName);GeneratedFiles;$(SolutionDir)tinyxml;$(SolutionDir)diStorm\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(SolutionDir)$(Platform)\$(Configuration)\diStorm.lib;$(SolutionDir)$(Platform)\$(Configuration)\tinyxml.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalManifestDependencies>type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' </AdditionalManifestDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalIncludeDirectories>GeneratedFiles\$(ConfigurationName);GeneratedFiles;$(SolutionDir)tinyxml;$(SolutionDir)diStorm\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MinimalRebuild>true</MinimalRebuild>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>$(SolutionDir)$(Platform)\$(Configuration)\diStorm.lib;$(SolutionDir)$(Platform)\$(Configuration)\tinyxml.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalManifestDependencies>type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' </AdditionalManifestDependencies>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
+      <EntryPointSymbol>
+      </EntryPointSymbol>
+      <GenerateMapFile>true</GenerateMapFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalIncludeDirectories>GeneratedFiles\$(ConfigurationName);GeneratedFiles;C:\Users\devil\source\repos\Allycs\sdk\SysCaller\include;C:\Users\devil\source\repos\Allycs\src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MinimalRebuild>false</MinimalRebuild>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>SysCaller.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalManifestDependencies>type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' </AdditionalManifestDependencies>
+      <EntryPointSymbol>
+      </EntryPointSymbol>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
+      <GenerateMapFile>false</GenerateMapFile>
+      <AdditionalLibraryDirectories>C:\Users\devil\source\repos\Allycs\sdk\SysCaller\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\gui\AboutGui.cpp" />
+    <ClCompile Include="src\core\ApiReader.cpp" />
+    <ClCompile Include="src\core\Architecture.cpp" />
+    <ClCompile Include="src\utils\Configuration.cpp" />
+    <ClCompile Include="src\utils\ConfigurationHolder.cpp" />
+    <ClCompile Include="src\utils\DeviceNameResolver.cpp" />
+    <ClCompile Include="src\gui\DisassemblerGui.cpp" />
+    <ClCompile Include="src\injection\DllInjection.cpp" />
+    <ClCompile Include="src\plugins\DllInjectionPlugin.cpp" />
+    <ClCompile Include="src\gui\DonateGui.cpp" />
+    <ClCompile Include="src\gui\DumpMemoryGui.cpp" />
+    <ClCompile Include="src\gui\DumpSectionGui.cpp" />
+    <ClCompile Include="src\core\FunctionExport.cpp" />
+    <ClCompile Include="src\core\IATReferenceScan.cpp" />
+    <ClCompile Include="src\core\IATSearch.cpp" />
+    <ClCompile Include="src\core\ImportRebuilder.cpp" />
+    <ClCompile Include="src\core\ImportsHandling.cpp" />
+    <ClCompile Include="src\utils\Logger.cpp" />
+    <ClCompile Include="src\app\main.cpp" />
+    <ClCompile Include="src\app\MainGui.cpp" />
+    <ClCompile Include="src\core\AllycsApi.cpp" />
+    <ClCompile Include="src\gui\OptionsGui.cpp" />
+    <ClCompile Include="src\core\PeParser.cpp" />
+    <ClCompile Include="src\gui\PickApiGui.cpp" />
+    <ClCompile Include="src\gui\PickDllGui.cpp" />
+    <ClCompile Include="src\plugins\PluginLoader.cpp" />
+    <ClCompile Include="src\core\ProcessAccessHelp.cpp" />
+    <ClCompile Include="src\injection\ProcessLister.cpp" />
+    <ClCompile Include="src\app\Allycs.cpp" />
+    <ClCompile Include="src\utils\StringConversion.cpp" />
+    <ClCompile Include="src\utils\SystemInformation.cpp" />
+    <ClCompile Include="src\core\TreeImportExport.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\app\resource.h" />
+    <ClInclude Include="src\include\gui\AboutGui.h" />
+    <ClInclude Include="src\include\core\ApiReader.h" />
+    <ClInclude Include="src\include\core\Architecture.h" />
+    <ClInclude Include="src\include\utils\Configuration.h" />
+    <ClInclude Include="src\include\utils\ConfigurationHolder.h" />
+    <ClInclude Include="src\include\utils\DeviceNameResolver.h" />
+    <ClInclude Include="src\include\gui\DisassemblerGui.h" />
+    <ClInclude Include="src\include\injection\DllInjection.h" />
+    <ClInclude Include="src\include\plugins\DllInjectionPlugin.h" />
+    <ClInclude Include="src\include\gui\DonateGui.h" />
+    <ClInclude Include="src\include\gui\DumpMemoryGui.h" />
+    <ClInclude Include="src\include\gui\DumpSectionGui.h" />
+    <ClInclude Include="src\include\core\FunctionExport.h" />
+    <ClInclude Include="src\include\utils\hexedit.h" />
+    <ClInclude Include="src\include\core\IATReferenceScan.h" />
+    <ClInclude Include="src\include\core\IATSearch.h" />
+    <ClInclude Include="src\include\core\ImportRebuilder.h" />
+    <ClInclude Include="src\include\core\ImportsHandling.h" />
+    <ClInclude Include="src\include\utils\Logger.h" />
+    <ClInclude Include="src\include\app\MainGui.h" />
+    <ClInclude Include="src\include\utils\multitree.h" />
+    <ClInclude Include="src\include\core\AllycsApi.h" />
+    <ClInclude Include="src\include\gui\OptionsGui.h" />
+    <ClInclude Include="src\include\core\PeParser.h" />
+    <ClInclude Include="src\include\gui\PickApiGui.h" />
+    <ClInclude Include="src\include\gui\PickDllGui.h" />
+    <ClInclude Include="src\include\plugins\PluginLoader.h" />
+    <ClInclude Include="src\include\core\ProcessAccessHelp.h" />
+    <ClInclude Include="src\include\injection\ProcessLister.h" />
+    <ClInclude Include="src\include\app\resource.h" />
+    <ClInclude Include="src\include\app\Allycs.h" />
+    <ClInclude Include="src\include\utils\StringConversion.h" />
+    <ClInclude Include="src\include\utils\SystemInformation.h" />
+    <ClInclude Include="src\include\core\Thunks.h" />
+    <ClInclude Include="src\include\core\TreeImportExport.h" />
+    <ClInclude Include="sdk\SysCaller\include\syscaller.h" />
+    <ClInclude Include="sdk\SysCaller\include\Sys\sysAllycs.h" />
+    <ClInclude Include="sdk\SysCaller\include\Sys\sysConstants.h" />
+    <ClInclude Include="sdk\SysCaller\include\Sys\sysExternals.h" />
+    <ClInclude Include="sdk\SysCaller\include\Sys\sysFunctions.h" />
+    <ClInclude Include="sdk\SysCaller\include\Sys\sysTypes.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="src\app\MainGui.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="allycs_export_definitions.def" />
+    <None Include="src\gui\icons\check.ico" />
+    <None Include="src\gui\icons\error.ico" />
+    <None Include="src\gui\icons\warning.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="src\gui\icons\allycs.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="sdk\SysCaller\lib\SysCaller.lib" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="MainGui.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
