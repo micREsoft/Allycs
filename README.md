@@ -78,8 +78,8 @@ SysWriteVirtualMemory
 
 3. After that run the Validation/Compatibility checks.
 
-4. **Important**: These stubs must be the default, non obfuscated versions.  
-   Obfuscated stubs currently break compatibility with Allycs.
+4. **Important**: Use only the default (non obfuscated) stubs in Release mode.
+Obfuscated stubs currently work only in Debug mode, due to unresolved configuration conflicts in Allycs.
 
 5. Now open SysCaller.sln via Visual Studio 2022
 
