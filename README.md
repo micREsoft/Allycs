@@ -83,7 +83,7 @@ Obfuscated stubs currently work only in Debug mode, due to unresolved configurat
 
 5. Now open SysCaller.sln via Visual Studio 2022
 
-6. Set build to `Release`, platform to `x64`, and C++ standard to **C++20** (If not already)
+6. Set build to `Release` if using default stubs, `Debug` if using obfuscated stubs, and C++ standard to **C++20** (If not already)
 
 7. Build the project to generate `SysCaller.lib`
 
