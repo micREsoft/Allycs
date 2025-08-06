@@ -41,7 +41,7 @@ vcpkg install distorm:x64-windows-static tinyxml2:x64-windows-static wtl:x64-win
 
 ### Step 1. Build Requires Syscalls via SysCaller
 
-1. Clone and open SysCaller via PY BuildTools first
+1. Download and open the [Bind.exe](https://github.com/micREsoft/SysCaller/releases) (PY BuildTools are deprecated) 
 
 2. Ensure the following syscall stubs are selected under the Integrity Tab:
 
@@ -78,7 +78,7 @@ SysWriteVirtualMemory
 
 3. After that run the Validation/Compatibility checks.
 
-4. **Important**: Use only the default (non obfuscated) stubs in Release mode.
+4. **Important**: When building SysCaller use the default (non obfuscated) stubs in Release mode.
 Obfuscated stubs currently work only in Debug mode, due to unresolved configuration conflicts in Allycs.
 
 5. Now open SysCaller.sln via Visual Studio 2022
