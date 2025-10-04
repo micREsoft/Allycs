@@ -1,0 +1,20 @@
+{
+  "name": "allycs",
+  "version": "2.0.0",
+  "description": "Import Table Reconstructor powered by SysCaller",
+  "dependencies": [
+    {
+      "name": "distorm",
+      "version>=": "3.5.2b"
+    },
+    {
+      "name": "tinyxml2",
+      "version>=": "11.0.0"
+    },
+    {
+      "name": "wtl",
+      "version>=": "10.0.10320#4"
+    }
+  ],
+  "builtin-baseline": "7e19f3c64cb636ee21f41bfe8558a6dfaae6236f"
+}
