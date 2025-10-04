@@ -1,18 +1,35 @@
-# Allycs
-
-## About
-
-**Allycs** is a modernized [Scylla](https://github.com/NtQuery/Scylla) rebuild that leverages the [SysCaller SDK](https://github.com/SysCallerSDK/SysCaller) to perform PE import reconstruction using native syscalls.
+<h1 align="center">Allycs</h1>
+<p align="center"><i>Import Table Reconstructor powered by SysCaller (Scylla rebuild)</i></p>
 
 ---
 
-## Build Requirements
+## About
 
-* **Visual Studio 2022** (C++20 toolset)
-* **SysCaller** build SysCaller with the proper resolver and indirect syscall support (see Build Instructions).
-* **vcpkg** (for dependencies used by Allycs)
+**Allycs** is a modernized Scylla rebuild using [SysCaller](https://github.com/SysCallerSDK/SysCaller) for native syscall powered PE import reconstruction. It avoids traditional API hooks by invoking syscalls through indirect calls, making it useful for stealthy dumping.
 
-Install required packages with vcpkg:
+---
+
+## Features
+
+Whats new: 
+- (SysCaller only supports x64)
+- Native syscall usage via indirect calls (WinAPI-less execution)
+- Added "Dont Compact Raw Data"
+- Removed alot of bloat
+- Powered by [SysCaller SDK](https://github.com/SysCallerSDK/SysCaller)
+
+---
+
+## Requirements
+
+### Visual Studio 2022  
+Ensure you have C++20 toolset enabled.
+
+### [SysCaller](https://github.com/SysCallerSDK/SysCaller)
+You will need to build SysCaller with the proper syscalls, more info below.
+
+### [vcpkg](https://github.com/microsoft/vcpkg)
+Install vcpkg if not already installed, then run:
 
 ```bash
 vcpkg install distorm:x64-windows-static tinyxml2:x64-windows-static wtl:x64-windows-static
@@ -20,41 +37,21 @@ vcpkg install distorm:x64-windows-static tinyxml2:x64-windows-static wtl:x64-win
 
 ---
 
-## Quick Overview: Indirect syscalls
-
-Allycs now uses SysCaller's indirect syscall mode by default, which then resolves syscall numbers at runtime and issues indirect calls into `ntdll` (or a resolved trampoline). This improves compatibility across Windows builds compared to hardcoded syscall numbers.
-
-> If you want to use direct or inline syscalls instead, modify the Allycs src, SysCaller build settings, and adjust `syscaller_config.h` accordingly.
-
----
-
 ## Build Instructions
 
-### Step 1 — Build SysCaller (required)
+### Step 1. Build Requires Syscalls via SysCaller
 
-1. Download `Bind.exe` (the official BuildTools GUI) from the SysCaller releases page and open it. (PY BuildTools are deprecated.)
-2. In Bind → Settings → General:
+1. Download and open the [Bind.exe](https://github.com/micREsoft/SysCaller/releases) (PY BuildTools are deprecated)
 
-   * Enable Bindings.
-   * Select Indirect syscall mode under *Syscall Mode*.
-3. Under the Integrity tab ensure the syscall stubs listed under *Required Syscalls* are selected (see the list below).
-4. Build SysCaller in Visual Studio 2022 (C++20).
+2. Go to settings and under the "General" tab there should be the following sections "Bindings, Syscall Mode". Under those sections enable Bindings and Indirect Syscall Mode. 
 
-   * Use **Release** for default (non-obfuscated) stubs.
-   * If you want obfuscated stubs then build in **Debug** (Note: obfuscated stubs currently only work reliably in Debug mode for Allycs (see notes below)).
-5. Ensure the following preprocessor definitions are set in `syscaller_config.h` before building:
+> Allycs now uses indirect syscalls! If you want to go back to using direct syscalls or inline syscalls you will have to modify the source code. 
 
-```cpp
-#define SYSCALLER_INDIRECT
-#define SYSCALLER_BINDINGS
-#define SYSCALLER_RESOLVER_PEB_LDR
-```
+> Indirect syscalls provide better stability across Windows versions by dynamically resolving syscall numbers at runtime, avoiding hardcoded syscall numbers that change between Windows builds.
 
-6. Build the SysCaller project as .dll to produce `SysCaller.dll` and `SysCaller.lib`.
+3. Ensure the following syscall stubs are selected under the Integrity Tab:
 
-**Required syscall stubs (select these in Bind → Integrity):**
-
-```
+```plaintext
 SysIndirectAllocateVirtualMemoryEx
 SysIndirectClose
 SysIndirectCreateThreadEx
@@ -73,38 +70,68 @@ SysIndirectTerminateProcess
 SysIndirectUnmapViewOfSection
 ```
 
----
+5. **Important**: When building SysCaller use the default (non obfuscated) stubs in Release mode.
+Obfuscated stubs currently work only in Debug mode, due to unresolved configuration conflicts in Allycs.
 
-### Step 2 — Integrate SysCaller into Allycs
+6. Now open SysCaller.sln via Visual Studio 2022
 
-Copy the following build outputs/files from your SysCaller build into the Allycs repo before building Allycs:
+7. Set build to `Release` if using default stubs, `Debug` if using obfuscated stubs, C++ standard to **C++20**, and set the output to .dll (If not already)
 
+8. Go to syscaller_config.h and make sure the following are uncommented and set as preprocessor defs:
+
+```cpp
+#define SYSCALLER_INDIRECT
+#define SYSCALLER_BINDINGS
+#define SYSCALLER_RESOLVER_PEB_LDR
 ```
-SysCaller.lib     → sdk/SysCaller/lib
-SysCaller.dll     → path/to/Allycs.exe (same folder as final binary)
-SysFunctions.h    → sdk/SysCaller/include/Sys
-```
 
-**Note:** Place `SysCaller.dll` next to `Allycs.exe` (or ensure it is discoverable in the same directory or via PATH) so the Allycs executable can load it at runtime.
+9. Build the project to generate `SysCaller.dll` and `SysCaller.lib`
 
 ---
 
-### Step 3 — Build Allycs
+### Step 2. Integrate SysCaller Output
 
-1. Open `Allycs.sln` in Visual Studio 2022.
-2. Set the platform to **x64** and configuration to **Release** (unless using obfuscated stubs which in that case follow the steps for obfuscated stubs).
-3. Build the `Allycs` project.
+- Copy the built files from SysCaller into Allycs:
+
+    ```
+    SysCaller.lib     → sdk/SysCaller/lib
+    SysCaller.dll     → path/to/exe
+    SysFunctions.h    → sdk/SysCaller/include/Sys
+    ```
 
 ---
 
-## Integration with x64dbg
+### Step 3. Build Allycs
 
-If you want to integrate Allycs into x64dbg (replace Scylla):
+- Open `Allycs.sln` in Visual Studio 2022
+- Set to `x64` & `Release` Mode (if not using obfuscated stubs )
+- Build the `Allycs` project  
+- Output binary: `build\x64\Release\Allycs.exe`
 
-1. Convert Allycs to a DLL:
+---
 
-   * In Visual Studio project settings, change the output type from **Console Application** to **Dynamic Link Library** (set `Configuration Type` to `Dynamic Library (.dll)`).
-2. Add an export definition file `allycs_export_definitions.def` with the required exports:
+## Usage
+
+Run Allycs and have fun! Enjoy this modern rebuild of Scylla with Syscalls.
+
+---
+
+### Notes
+
+If you want to integrate **Allycs into x64dbg**, you’ll need to modify x64dbg to call Allycs instead of Scylla. (After doing so follow along below)
+
+#### Step 1. Convert Allycs from `.exe` to `.dll`
+
+1. Open the Allycs project in Visual Studio 2022
+2. In the project settings:
+    - Change the output type from **Console Application** to **Dynamic Link Library**
+    - Set `Configuration Type` to `Dynamic Library (.dll)`
+
+#### Step 2. Create Allycs Export Definition File
+
+Create a new file in your project root named:
+
+- allycs_export_definitions.def
 
 ```def
 LIBRARY Allycs
@@ -124,31 +151,30 @@ EXPORTS
     AllycsIatFixAutoW         @13
 ```
 
-3. Link the `.def` file:
+#### Step 3. Link the .def File in Visual Studio
 
-   * Project → Properties → Linker → Input → *Module Definition File* → `allycs_export_definitions.def`
-4. Build the DLL and load it in x64dbg in place of Scylla.
+1. Right click the Allycs project > Properties
 
----
+2. Navigate to: Linker > Input
 
-## Dev Notes
+3. Set the Module Definition File to:
 
-* Allycs and SysCaller only support x64.
-* Obfuscated stubs in SysCaller currently require Debug configuration to be used with Allycs. This is a known config edge case, for Release builds use the default (non obfuscated) stubs.
-* Make sure `SysCaller.dll` is present next to `Allycs.exe` at runtime.
-* Be mindful that runtime behaviors like PEB walking, export parsing, and RWX allocations can be flagged by defensive tooling in some environments.
+```plaintext
+allycs_export_definitions.def
+```
 
----
+- Build the DLL. Now you can now load Allycs.dll from x64dbg in place of Scylla.dll!
 
 ## License
 
-This project is released under the **GNU General Public License v3.0 (GPL-3.0)**. See the `LICENSE` file for full details.
+This project is licensed under **GNU General Public License v3.0** — see [LICENSE](LICENSE) for details.
 
 ---
 
 ## Disclaimer
 
-Allycs is intended **strictly for educational and research use**. The maintainers assume no responsibility for misuse or damage resulting from the use of this software.
+Allycs is intended **strictly for educational and research use**.  
+The author assumes no responsibility for any misuse or damage caused by this software.
 
 ---
 
