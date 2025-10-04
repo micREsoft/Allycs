@@ -1,0 +1,172 @@
+name: "Build Allycs v2.0.0"
+
+permissions:
+  contents: write
+  packages: write
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1.3
+
+    - name: Setup vcpkg
+      uses: lukka/run-vcpkg@v11
+      with:
+        vcpkgDirectory: '${{ github.workspace }}/vcpkg'
+        vcpkgGitCommitId: '7e19f3c64cb636ee21f41bfe8558a6dfaae6236f'
+        vcpkgJsonGlob: 'vcpkg.json'
+        runVcpkgInstall: '--triplet=x64-windows-static --x-wait-for-lock'
+
+    - name: Set Vcpkg Environment
+      run: |
+        echo "VCPKG_ROOT=${{ github.workspace }}/vcpkg" >> $env:GITHUB_ENV
+        echo "VcpkgRoot=${{ github.workspace }}/vcpkg" >> $env:GITHUB_ENV
+        echo "VCPKG_DEFAULT_TRIPLET=x64-windows-static" >> $env:GITHUB_ENV
+        echo "CMAKE_WARN_UNUSED_CLI_VARS=OFF" >> $env:GITHUB_ENV
+        echo "VCPKG_CMAKE_CONFIGURE_OPTIONS=-DCMAKE_WARN_UNUSED_CLI_VARS=OFF" >> $env:GITHUB_ENV
+
+    - name: Setup Vcpkg Binary Caching
+      uses: actions/cache@v4
+      with:
+        path: |
+          ${{ github.workspace }}/vcpkg/installed
+          ${{ github.workspace }}/vcpkg/packages
+        key: vcpkg-${{ hashFiles('**/vcpkg.json') }}-${{ runner.os }}-x64-windows-static
+        restore-keys: |
+          vcpkg-${{ hashFiles('**/vcpkg.json') }}-${{ runner.os }}-
+          vcpkg-${{ runner.os }}-
+
+    - name: Integrate Vcpkg with MSBuild
+      run: |
+        & "${{ github.workspace }}/vcpkg/vcpkg.exe" integrate install
+
+    - name: Verify SysCaller Dependencies
+      run: |
+        Write-Host "Checking SysCaller dependencies..."
+        
+        # Check if SysCaller.lib exists
+        if (Test-Path "sdk\SysCaller\lib\SysCaller.lib") {
+          Write-Host "SysCaller.lib found!"
+          Get-Item "sdk\SysCaller\lib\SysCaller.lib" | Select-Object Name, Length, LastWriteTime
+        } else {
+          Write-Host "SysCaller.lib not found!"
+          exit 1
+        }
+        
+        # Check if SysCaller headers exist
+        if (Test-Path "sdk\SysCaller\include\syscaller.h") {
+          Write-Host "SysCaller headers found!"
+        } else {
+          Write-Host "SysCaller headers not found!"
+          exit 1
+        }
+        
+        # Check if SysCaller.dll exists (for runtime)
+        if (Test-Path "sdk\SysCaller\lib\SysCaller.dll") {
+          Write-Host "SysCaller.dll found!"
+        } else {
+          Write-Host "SysCaller.dll not found, this is needed at runtime!"
+        }
+
+    - name: Build Solution (Release x64)
+      run: |
+        Write-Host "Building Release x64..."
+        Write-Host "VcpkgRoot: $env:VcpkgRoot"
+        Write-Host "VCPKG_ROOT: $env:VCPKG_ROOT"
+
+        msbuild "Allycs.sln" /p:Configuration=Release /p:Platform=x64 /p:VcpkgEnabled=true /p:VcpkgEnableManifest=true /p:VcpkgUseStatic=true /p:VcpkgTriplet=x64-windows-static /p:VcpkgRoot="$env:VcpkgRoot"
+
+    - name: Copy SysCaller DLL (Release)
+      run: |
+        Write-Host "Copying SysCaller.dll for Release build..."
+        $outputDir = "build\x64\Release"
+        
+        if (Test-Path "sdk\SysCaller\lib\SysCaller.dll") {
+          Copy-Item "sdk\SysCaller\lib\SysCaller.dll" $outputDir
+          Write-Host "Copied SysCaller.dll to Release build"
+        } else {
+          Write-Host "SysCaller.dll not found. Allycs will not run properly!"
+        }
+
+    - name: Verify Executables Exist
+      run: |
+        $releaseExists = Test-Path "build\x64\Release\Allycs.exe"
+
+        if ($releaseExists) {
+          Write-Host "Allycs.exe (Release) Built Successfully!"
+          Get-Item "build\x64\Release\Allycs.exe" | Select-Object Name, Length, LastWriteTime
+        } else {
+          Write-Host "Allycs.exe (Release) not found!"
+          Get-ChildItem -Recurse -Name "*.exe" | ForEach-Object { Write-Host "Found: $_" }
+          exit 1
+        }
+
+    - name: List Build Directory Contents
+      run: |
+        Write-Host "Build Directory Contents:"
+        if (Test-Path "build\x64\Release") {
+          Write-Host "Release Directory:"
+          Get-ChildItem "build\x64\Release" | Select-Object Name, Length, LastWriteTime
+        }
+
+    - name: Upload Build Artifacts (Release)
+      uses: actions/upload-artifact@v4
+      with:
+        name: "Allycs-v2.0.0"
+        path: build/x64/Release/
+        retention-days: 30
+
+    - name: Create Release Package
+      if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+      run: |
+        $version = "v2.0.0"
+        $zipName = "Allycs-$version.zip"
+
+        New-Item -ItemType Directory -Path "release-package" -Force
+
+        # Copy Release files
+        Copy-Item "build\x64\Release\Allycs.exe" "release-package\"
+        Copy-Item "build\x64\Release\SysCaller.dll" "release-package\"
+
+        # Create the zip file
+        Compress-Archive -Path "release-package\*" -DestinationPath $zipName -Force
+
+        Write-Host "Created Release Package: $zipName"
+        Get-Item $zipName | Select-Object Name, Length
+
+    - name: Upload Release Package
+      if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+      uses: actions/upload-artifact@v4
+      with:
+        name: "Release v2.0.0"
+        path: Allycs-v2.0.0.zip
+        retention-days: 90
+
+    - name: Create GitHub Release
+      if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: v2.0.0
+        name: "Allycs v2.0.0"
+        body: |
+          ## Allycs v2.0.0
+
+          **Build Date:** ${{ github.event.head_commit.timestamp }}
+          **Commit:** ${{ github.sha }}
+          **Platform:** Windows x64 (64-bit)
+        files: Allycs-v2.0.0.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
