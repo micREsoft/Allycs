@@ -7,6 +7,10 @@ permissions:
 on:
   push:
     branches: [ main, master ]
+    paths-ignore:
+      - 'README.md'
+      - '**/*.md'
+      - '.github/**'
   pull_request:
     branches: [ main, master ]
   workflow_dispatch:
