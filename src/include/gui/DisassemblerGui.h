@@ -1,7 +1,7 @@
 #pragma once
 
 #include <syscaller.h>
-#include "app/resource.h"
+#include <app/resource.h>
 // WTL
 #include <atlbase.h>       // base ATL classes
 #include <atlapp.h>        // base WTL classes
@@ -12,8 +12,8 @@
 #include <atlctrls.h>      // WTL controls
 #include <atlddx.h>        // WTL dialog data exchange
 #include <vector>
-#include "utils/hexedit.h"
-#include "core/ApiReader.h"
+#include <utils/hexedit.h>
+#include <core/ApiReader.h>
 
 enum DisassemblerAddressType {
 	ADDRESS_TYPE_MODULE,

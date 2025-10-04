@@ -1,7 +1,7 @@
-#include "gui/DisassemblerGui.h"
+#include <gui/DisassemblerGui.h>
 #include <algorithm>
-#include "core/ProcessAccessHelp.h"
-#include "core/Architecture.h"
+#include <core/ProcessAccessHelp.h>
+#include <core/Architecture.h>
 #include <Psapi.h>
 #pragma comment(lib, "Psapi.lib")
 

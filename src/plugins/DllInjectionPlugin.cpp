@@ -1,5 +1,5 @@
-#include "plugins/DllInjectionPlugin.h"
-#include "app/Allycs.h"
+#include <plugins/DllInjectionPlugin.h>
+#include <app/Allycs.h>
 
 const WCHAR * DllInjectionPlugin::FILE_MAPPING_NAME = L"AllycsPluginExchange";
 
@@ -40,7 +40,7 @@ void DllInjectionPlugin::injectPlugin(Plugin & plugin, std::map<DWORD_PTR, Impor
 
 	addUnresolvedImports(unresImp, moduleList);
 
-	SysUnmapViewOfSection((HANDLE)-1, lpViewOfFile);
+	SysIndirectUnmapViewOfSection((HANDLE)-1, lpViewOfFile);
 	lpViewOfFile = 0;
 
 	HMODULE hDll = dllInjection(hProcess, plugin.fullpath);
@@ -90,13 +90,13 @@ void DllInjectionPlugin::injectImprecPlugin(Plugin & plugin, std::map<DWORD_PTR,
 #ifdef DEBUG_COMMENTS
 		Allycs::debugLog.log(L"injectImprecPlugin :: MapViewOfFile failed 0x%X", GetLastError());
 #endif
-		SysClose(hImprecMap);
+		SysIndirectClose(hImprecMap);
 		return;
 	}
 
 	CopyMemory(lpImprecViewOfFile,plugin.fullpath, mapSize);
 
-	SysUnmapViewOfSection((HANDLE)-1, lpImprecViewOfFile);
+	SysIndirectUnmapViewOfSection((HANDLE)-1, lpImprecViewOfFile);
 
 	newPlugin.fileSize = plugin.fileSize;
 	wcscpy_s(newPlugin.pluginName, plugin.pluginName);
@@ -104,7 +104,7 @@ void DllInjectionPlugin::injectImprecPlugin(Plugin & plugin, std::map<DWORD_PTR,
 
 	injectPlugin(newPlugin,moduleList,imageBase,imageSize);
 
-	SysClose(hImprecMap);
+	SysIndirectClose(hImprecMap);
 }
 
 
@@ -128,7 +128,7 @@ bool DllInjectionPlugin::createFileMapping(DWORD mappingSize)
 #ifdef DEBUG_COMMENTS
 		Allycs::debugLog.log(L"createFileMapping :: MapViewOfFile failed 0x%X", GetLastError());
 #endif
-		SysClose(hMapFile);
+		SysIndirectClose(hMapFile);
 		hMapFile = 0;
 		return false;
 	}
@@ -142,12 +142,12 @@ void DllInjectionPlugin::closeAllHandles()
 {
 	if (lpViewOfFile)
 	{
-		SysUnmapViewOfSection((HANDLE)-1, lpViewOfFile);
+		SysIndirectUnmapViewOfSection((HANDLE)-1, lpViewOfFile);
 		lpViewOfFile = 0;
 	}
 	if (hMapFile)
 	{
-		SysClose(hMapFile);
+		SysIndirectClose(hMapFile);
 		hMapFile = 0;
 	}
 }

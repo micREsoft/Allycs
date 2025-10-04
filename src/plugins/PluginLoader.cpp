@@ -1,9 +1,9 @@
-#include "plugins/PluginLoader.h"
-#include "utils/Logger.h"
-#include "core/ProcessAccessHelp.h"
-#include "utils/StringConversion.h"
+#include <plugins/PluginLoader.h>
+#include <utils/Logger.h>
+#include <core/ProcessAccessHelp.h>
+#include <utils/StringConversion.h>
 #include <shlwapi.h>
-#include "core/PeParser.h"
+#include <core/PeParser.h>
 
 const WCHAR PluginLoader::PLUGIN_DIR[] = L"Plugins\\";
 const WCHAR PluginLoader::PLUGIN_SEARCH_STRING[] = L"*.dll";

@@ -1,7 +1,6 @@
-#include "gui/DonateGui.h"
-#include "app/Allycs.h"
-#include "core/Architecture.h"
-
+#include <gui/DonateGui.h>
+#include <app/Allycs.h>
+#include <core/Architecture.h>
 
 const WCHAR DonateGui::TEXT_DONATE[] = L"If you like this tool, please feel free to donate some Bitcoins to support this project.\n\n\nBTC Address:\n\n" TEXT(DONATE_BTC_ADDRESS);
 

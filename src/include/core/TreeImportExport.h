@@ -1,8 +1,8 @@
 #pragma once
 
 #include <syscaller.h>
-#include "injection/ProcessLister.h"
-#include "core/Thunks.h"
+#include <injection/ProcessLister.h>
+#include <core/Thunks.h>
 #include <tinyxml2.h>
 
 class TreeImportExport

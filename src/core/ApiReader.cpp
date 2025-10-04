@@ -1,9 +1,9 @@
-#include "core/ApiReader.h"
-#include "app/Allycs.h"
-#include "core/Architecture.h"
-#include "utils/SystemInformation.h"
-#include "utils/StringConversion.h"
-#include "core/PeParser.h"
+#include <core/ApiReader.h>
+#include <app/Allycs.h>
+#include <core/Architecture.h>
+#include <utils/SystemInformation.h>
+#include <utils/StringConversion.h>
+#include <core/PeParser.h>
 
 std::unordered_map<DWORD_PTR, ApiInfo *> ApiReader::apiList; //api look up table
 std::map<DWORD_PTR, ImportModuleThunk> *  ApiReader::moduleThunkList; //store found apis
@@ -93,7 +93,7 @@ void ApiReader::parseModuleWithMapping(ModuleInfo *moduleInfo)
 	}
 
 
-	SysUnmapViewOfSection((HANDLE)-1, fileMapping);
+	SysIndirectUnmapViewOfSection((HANDLE)-1, fileMapping);
 
 }
 
@@ -1233,7 +1233,7 @@ bool ApiReader::isInvalidMemoryForIat(DWORD_PTR address)
         return true;
 
     MEMORY_BASIC_INFORMATION memInfo{};
-    NTSTATUS status = SysQueryVirtualMemory(
+    NTSTATUS status = SysIndirectQueryVirtualMemory(
         ProcessAccessHelp::hProcess,
         reinterpret_cast<PVOID>(address),
         MemoryBasicInformation,

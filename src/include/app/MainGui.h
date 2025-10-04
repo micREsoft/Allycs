@@ -1,7 +1,7 @@
 #pragma once
 
 #include <syscaller.h>
-#include "resource.h"
+#include <app/resource.h>
 
 // WTL
 #include <atlbase.h>       // base ATL classes
@@ -12,18 +12,18 @@
 #include <atlcrack.h>      // WTL enhanced msg map macros
 #include <atlctrls.h>      // WTL controls
 #include <atlddx.h>        // WTL dialog data exchange
-#include "utils/multitree.h"
-#include "utils/hexedit.h"
+#include <utils/multitree.h>
+#include <utils/hexedit.h>
 
-#include "utils/Logger.h"
-#include "injection/ProcessLister.h"
-#include "core/IATSearch.h"
-#include "gui/PickDllGui.h"
-#include "gui/DumpMemoryGui.h"
-#include "gui/DumpSectionGui.h"
-#include "core/ImportsHandling.h"
-#include "core/FunctionExport.h"
-#include "core/IATReferenceScan.h"
+#include <utils/Logger.h>
+#include <injection/ProcessLister.h>
+#include <core/IATSearch.h>
+#include <gui/PickDllGui.h>
+#include <gui/DumpMemoryGui.h>
+#include <gui/DumpSectionGui.h>
+#include <core/ImportsHandling.h>
+#include <core/FunctionExport.h>
+#include <core/IATReferenceScan.h>
 
 class MainGui : public CDialogImpl<MainGui>, public CWinDataExchange<MainGui>, public CDialogResize<MainGui>, public CMessageFilter
 {

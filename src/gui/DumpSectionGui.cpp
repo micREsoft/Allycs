@@ -1,8 +1,7 @@
-#include "gui/DumpSectionGui.h"
-#include "core/Architecture.h"
-#include "core/ProcessAccessHelp.h"
-#include "core/PeParser.h"
-
+#include <gui/DumpSectionGui.h>
+#include <core/Architecture.h>
+#include <core/ProcessAccessHelp.h>
+#include <core/PeParser.h>
 
 bool PeSection::highlightVirtualSize()
 {

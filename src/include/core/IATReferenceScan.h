@@ -1,10 +1,10 @@
 #pragma once
 
 #include <vector>
-#include "core/ProcessAccessHelp.h"
-#include "core/PeParser.h"
-#include "utils/Logger.h"
-#include "core/ApiReader.h"
+#include <core/ProcessAccessHelp.h>
+#include <core/PeParser.h>
+#include <utils/Logger.h>
+#include <core/ApiReader.h>
 
 enum IATReferenceType {
 	IAT_REFERENCE_PTR_JMP,

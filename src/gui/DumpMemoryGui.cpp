@@ -1,9 +1,8 @@
-#include "gui/DumpMemoryGui.h"
-#include "core/Architecture.h"
-#include "core/ProcessAccessHelp.h"
+#include <gui/DumpMemoryGui.h>
+#include <core/Architecture.h>
+#include <core/ProcessAccessHelp.h>
 #include <Psapi.h>
-#include "core/PeParser.h"
-
+#include <core/PeParser.h>
 
 WCHAR DumpMemoryGui::protectionString[100];
 const WCHAR DumpMemoryGui::MemoryUndefined[] = L"UNDEF";
@@ -358,7 +357,7 @@ void DumpMemoryGui::getMemoryList()
 
 	while(true)
 	{
-		NTSTATUS status = SysQueryVirtualMemory(
+		NTSTATUS status = SysIndirectQueryVirtualMemory(
 			ProcessAccessHelp::hProcess, 
 			reinterpret_cast<PVOID>(address), 
 			MemoryBasicInformation, 

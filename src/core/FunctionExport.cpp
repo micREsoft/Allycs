@@ -1,12 +1,12 @@
-#include "core/PeParser.h"
-#include "core/ProcessAccessHelp.h"
-#include "app/Allycs.h"
-#include "core/Architecture.h"
-#include "core/FunctionExport.h"
-#include "injection/ProcessLister.h"
-#include "core/ApiReader.h"
-#include "core/IATSearch.h"
-#include "core/ImportRebuilder.h"
+#include <core/PeParser.h>
+#include <core/ProcessAccessHelp.h>
+#include <app/Allycs.h>
+#include <core/Architecture.h>
+#include <core/FunctionExport.h>
+#include <injection/ProcessLister.h>
+#include <core/ApiReader.h>
+#include <core/IATSearch.h>
+#include <core/ImportRebuilder.h>
 
 extern HINSTANCE hDllModule;
 

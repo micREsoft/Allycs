@@ -1,5 +1,5 @@
-#include "gui/PickDllGui.h"
-#include "core/Architecture.h"
+#include <gui/PickDllGui.h>
+#include <core/Architecture.h>
 
 PickDllGui::PickDllGui(std::vector<ModuleInfo> &moduleList) : moduleList(moduleList)
 {

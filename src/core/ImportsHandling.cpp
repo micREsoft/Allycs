@@ -1,10 +1,10 @@
-#include "core/ImportsHandling.h"
-#include "core/Thunks.h"
-#include "core/Architecture.h"
+#include <core/ImportsHandling.h>
+#include <core/Thunks.h>
+#include <core/Architecture.h>
 #include <atlmisc.h>
 #include <atlcrack.h>
-#include "utils/multitree.h" // CMultiSelectTreeViewCtrl
-#include "app/resource.h"
+#include <utils/multitree.h> // CMultiSelectTreeViewCtrl
+#include <app/resource.h>
 
 //#define DEBUG_COMMENTS
 

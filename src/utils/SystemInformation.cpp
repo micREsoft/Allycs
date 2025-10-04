@@ -1,4 +1,4 @@
-#include "utils/SystemInformation.h"
+#include <utils/SystemInformation.h>
 
 OPERATING_SYSTEM SystemInformation::currenOS = UNKNOWN_OS;
 

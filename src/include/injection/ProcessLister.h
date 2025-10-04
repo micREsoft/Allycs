@@ -4,8 +4,8 @@
 #include <tlhelp32.h>
 #include <vector>
 #include <psapi.h>
-#include "core/AllycsApi.h"
-#include "utils/DeviceNameResolver.h"
+#include <core/AllycsApi.h>
+#include <utils/DeviceNameResolver.h>
 
 typedef BOOL (WINAPI *def_IsWow64Process)(HANDLE hProcess, PBOOL Wow64Process);
 

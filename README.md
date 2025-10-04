@@ -5,7 +5,7 @@
 
 ## About
 
-**Allycs** is a modernized Scylla rebuild using [SysCaller](https://github.com/SysCallerSDK/SysCaller) for native syscall powered PE import reconstruction. It avoids traditional API hooks by directly invoking syscalls, making it useful for stealthy dumping.
+**Allycs** is a modernized Scylla rebuild using [SysCaller](https://github.com/SysCallerSDK/SysCaller) for native syscall powered PE import reconstruction. It avoids traditional API hooks by invoking syscalls through indirect calls, making it useful for stealthy dumping.
 
 ---
 
@@ -13,7 +13,7 @@
 
 Whats new: 
 - (SysCaller only supports x64)
-- Native syscall usage (WinAPI-less execution)
+- Native syscall usage via indirect calls (WinAPI-less execution)
 - Added "Dont Compact Raw Data"
 - Removed alot of bloat
 - Powered by [SysCaller SDK](https://github.com/SysCallerSDK/SysCaller)
@@ -41,51 +41,51 @@ vcpkg install distorm:x64-windows-static tinyxml2:x64-windows-static wtl:x64-win
 
 ### Step 1. Build Requires Syscalls via SysCaller
 
-1. Download and open the [Bind.exe](https://github.com/micREsoft/SysCaller/releases) (PY BuildTools are deprecated) 
+1. Download and open the [Bind.exe](https://github.com/micREsoft/SysCaller/releases) (PY BuildTools are deprecated)
 
-2. Ensure the following syscall stubs are selected under the Integrity Tab:
+2. Go to settings and under the "General" tab there should be the following sections "Bindings, Syscall Mode". Under those sections enable Bindings and Indirect Syscall Mode. 
+
+> Allycs now uses indirect syscalls! If you want to go back to using direct syscalls or inline syscalls you will have to modify the source code. 
+
+> Indirect syscalls provide better stability across Windows versions by dynamically resolving syscall numbers at runtime, avoiding hardcoded syscall numbers that change between Windows builds.
+
+3. Ensure the following syscall stubs are selected under the Integrity Tab:
 
 ```plaintext
-SysAllocateVirtualMemoryEx
-SysClose
-SysCreateSection
-SysCreateThreadEx
-SysDuplicateObject
-SysFreeVirtualMemory
-SysGetContextThread
-SysMapViewOfSection
-SysOpenProcess
-SysOpenSymbolicLinkObject
-SysOpenThread
-SysProtectVirtualMemory
-SysQueryInformationFile
-SysQueryInformationProcess
-SysQueryInformationThread
-SysQueryObject
-SysQuerySymbolicLinkObject
-SysQuerySystemInformation
-SysQueryVirtualMemory
-SysResumeProcess
-SysResumeThread
-SysSetContextThread
-SysSetInformationThread
-SysSuspendProcess
-SysSuspendThread
-SysTerminateProcess
-SysUnmapViewOfSection
-SysWriteVirtualMemory
+SysIndirectAllocateVirtualMemoryEx
+SysIndirectClose
+SysIndirectCreateThreadEx
+SysIndirectFreeVirtualMemory
+SysIndirectOpenProcess
+SysIndirectOpenSymbolicLinkObject
+SysIndirectProtectVirtualMemory
+SysIndirectQueryInformationProcess
+SysIndirectQuerySymbolicLinkObject
+SysIndirectQuerySystemInformation
+SysIndirectQueryVirtualMemory
+SysIndirectResumeProcess
+SysIndirectSetInformationThread
+SysIndirectSuspendProcess
+SysIndirectTerminateProcess
+SysIndirectUnmapViewOfSection
 ```
 
-3. After that run the Validation/Compatibility checks.
-
-4. **Important**: When building SysCaller use the default (non obfuscated) stubs in Release mode.
+5. **Important**: When building SysCaller use the default (non obfuscated) stubs in Release mode.
 Obfuscated stubs currently work only in Debug mode, due to unresolved configuration conflicts in Allycs.
 
-5. Now open SysCaller.sln via Visual Studio 2022
+6. Now open SysCaller.sln via Visual Studio 2022
 
-6. Set build to `Release` if using default stubs, `Debug` if using obfuscated stubs, and C++ standard to **C++20** (If not already)
+7. Set build to `Release` if using default stubs, `Debug` if using obfuscated stubs, C++ standard to **C++20**, and set the output to .dll (If not already)
 
-7. Build the project to generate `SysCaller.lib`
+8. Go to syscaller_config.h and make sure the following are uncommented and set as preprocessor defs:
+
+```cpp
+#define SYSCALLER_INDIRECT
+#define SYSCALLER_BINDINGS
+#define SYSCALLER_RESOLVER_PEB_LDR
+```
+
+9. Build the project to generate `SysCaller.dll` and `SysCaller.lib`
 
 ---
 
@@ -95,6 +95,7 @@ Obfuscated stubs currently work only in Debug mode, due to unresolved configurat
 
     ```
     SysCaller.lib     → sdk/SysCaller/lib
+    SysCaller.dll     → path/to/exe
     SysFunctions.h    → sdk/SysCaller/include/Sys
     ```
 
@@ -103,7 +104,7 @@ Obfuscated stubs currently work only in Debug mode, due to unresolved configurat
 ### Step 3. Build Allycs
 
 - Open `Allycs.sln` in Visual Studio 2022
-- Set to `x64` & `Release` Mode if not already  
+- Set to `x64` & `Release` Mode (if not using obfuscated stubs )
 - Build the `Allycs` project  
 - Output binary: `build\x64\Release\Allycs.exe`
 

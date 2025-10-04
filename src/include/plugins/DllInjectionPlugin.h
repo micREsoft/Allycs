@@ -1,9 +1,9 @@
 #pragma once
 
-#include "injection/DllInjection.h"
-#include "plugins/PluginLoader.h"
-#include "core/Thunks.h"
-#include "core/ApiReader.h"
+#include <injection/DllInjection.h>
+#include <plugins/PluginLoader.h>
+#include <core/Thunks.h>
+#include <core/ApiReader.h>
 
 #define PLUGIN_IMPREC_EXCHANGE_DLL_PATH "AllycsImprecPluginExchangePath"
 

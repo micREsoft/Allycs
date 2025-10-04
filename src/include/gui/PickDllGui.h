@@ -1,9 +1,9 @@
 #pragma once
 
 #include <syscaller.h>
-#include "app/resource.h"
+#include <app/resource.h>
 #include <vector>
-#include "core/ProcessAccessHelp.h" // ModuleInfo
+#include <core/ProcessAccessHelp.h> // ModuleInfo
 
 // WTL
 #include <atlbase.h>       // base ATL classes

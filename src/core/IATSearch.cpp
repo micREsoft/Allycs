@@ -1,6 +1,6 @@
-#include "core/IATSearch.h"
-#include "app/Allycs.h"
-#include "core/Architecture.h"
+#include <core/IATSearch.h>
+#include <app/Allycs.h>
+#include <core/Architecture.h>
 
 //#define DEBUG_COMMENTS
 
@@ -416,7 +416,7 @@ void IATSearch::findExecutableMemoryPagesByStartAddress(DWORD_PTR startAddress, 
 	*memorySize = 0;
 	*baseAddress = 0;
 
-	NTSTATUS status = SysQueryVirtualMemory(
+	NTSTATUS status = SysIndirectQueryVirtualMemory(
 		hProcess,
 		reinterpret_cast<PVOID>(startAddress),
 		MemoryBasicInformation,
@@ -428,7 +428,7 @@ void IATSearch::findExecutableMemoryPagesByStartAddress(DWORD_PTR startAddress, 
 	if (!NT_SUCCESS(status))
 	{
 #ifdef DEBUG_COMMENTS
-		Allycs::debugLog.log(L"findIATStartAddress :: SysQueryVirtualMemory error %u", GetLastError());
+		Allycs::debugLog.log(L"findIATStartAddress :: SysIndirectQueryVirtualMemory error %u", GetLastError());
 #endif
 		return;
 	}
@@ -440,7 +440,7 @@ void IATSearch::findExecutableMemoryPagesByStartAddress(DWORD_PTR startAddress, 
 		*baseAddress = reinterpret_cast<DWORD_PTR>(memBasic.BaseAddress);
 		tempAddress = reinterpret_cast<DWORD_PTR>(memBasic.BaseAddress) - 1;
 
-		status = SysQueryVirtualMemory(
+		status = SysIndirectQueryVirtualMemory(
 			hProcess,
 			reinterpret_cast<PVOID>(tempAddress),
 			MemoryBasicInformation,
@@ -464,7 +464,7 @@ void IATSearch::findExecutableMemoryPagesByStartAddress(DWORD_PTR startAddress, 
 		tempAddress += memBasic.RegionSize;
 		*memorySize += memBasic.RegionSize;
 
-		status = SysQueryVirtualMemory(
+		status = SysIndirectQueryVirtualMemory(
 			hProcess,
 			reinterpret_cast<PVOID>(tempAddress),
 			MemoryBasicInformation,
@@ -590,7 +590,7 @@ void IATSearch::getMemoryBaseAndSizeForIat(DWORD_PTR address, DWORD_PTR* baseAdd
     *baseAddress = 0;
     *baseSize = 0;
 
-    NTSTATUS status = SysQueryVirtualMemory(
+    NTSTATUS status = SysIndirectQueryVirtualMemory(
         hProcess,
         reinterpret_cast<PVOID>(address),
         MemoryBasicInformation,
@@ -611,7 +611,7 @@ void IATSearch::getMemoryBaseAndSizeForIat(DWORD_PTR address, DWORD_PTR* baseAdd
 
     //Get the neighbours
     DWORD_PTR prevAddress = reinterpret_cast<DWORD_PTR>(memBasic2.BaseAddress) - 1;
-    status = SysQueryVirtualMemory(
+    status = SysIndirectQueryVirtualMemory(
         hProcess,
         reinterpret_cast<PVOID>(prevAddress),
         MemoryBasicInformation,
@@ -625,7 +625,7 @@ void IATSearch::getMemoryBaseAndSizeForIat(DWORD_PTR address, DWORD_PTR* baseAdd
         DWORD_PTR nextAddress = reinterpret_cast<DWORD_PTR>(memBasic2.BaseAddress) + 
                                static_cast<DWORD_PTR>(memBasic2.RegionSize);
         
-        status = SysQueryVirtualMemory(
+        status = SysIndirectQueryVirtualMemory(
             hProcess,
             reinterpret_cast<PVOID>(nextAddress),
             MemoryBasicInformation,
