@@ -1,7 +1,7 @@
-#include "core/PeParser.h"
-#include "core/AllycsApi.h"
-#include "core/ProcessAccessHelp.h"
-#include "app/Allycs.h"
+#include <core/PeParser.h>
+#include <core/AllycsApi.h>
+#include <core/ProcessAccessHelp.h>
+#include <app/Allycs.h>
 #include <algorithm>
 #include <imagehlp.h>
 #pragma comment(lib, "Imagehlp.lib")
@@ -521,7 +521,7 @@ void PeParser::closeFileHandle()
 {
 	if (hFile != INVALID_HANDLE_VALUE)
 	{
-		SysClose(hFile);
+		SysIndirectClose(hFile);
 		hFile = INVALID_HANDLE_VALUE;
 	}
 }
@@ -1261,12 +1261,12 @@ bool PeParser::updatePeHeaderChecksum(const WCHAR* targetFile, DWORD fileSize)
 						retValue = true;
 					}
 
-					SysUnmapViewOfSection((HANDLE)-1, addrMappedDll);
+					SysIndirectUnmapViewOfSection((HANDLE)-1, addrMappedDll);
 				}
 			}
-			SysClose(hMappedFile);
+			SysIndirectClose(hMappedFile);
 		}
-		SysClose(hFileToMap);
+		SysIndirectClose(hFileToMap);
 	}
 
 	return retValue;

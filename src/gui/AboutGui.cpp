@@ -1,6 +1,6 @@
-#include "gui/AboutGui.h"
-#include "app/Allycs.h"
-#include "core/Architecture.h"
+#include <gui/AboutGui.h>
+#include <app/Allycs.h>
+#include <core/Architecture.h>
 
 const WCHAR AboutGui::TEXT_VISIT[] = L"Visit <a>SysCallerSDK</a>";
 const WCHAR AboutGui::TEXT_DEVELOPED[] = L"Developed with Microsoft Visual Studio, written in pure C/C++";

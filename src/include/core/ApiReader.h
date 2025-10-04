@@ -2,8 +2,8 @@
 
 #include <map>
 #include <unordered_map>
-#include "core/ProcessAccessHelp.h"
-#include "Thunks.h"
+#include <core/ProcessAccessHelp.h>
+#include <core/Thunks.h>
 
 typedef std::pair<DWORD_PTR, ApiInfo *> API_Pair;
 

@@ -1,5 +1,5 @@
-#include "gui/OptionsGui.h"
-#include "app/Allycs.h"
+#include <gui/OptionsGui.h>
+#include <app/Allycs.h>
 
 BOOL OptionsGui::OnInitDialog(CWindow wndFocus, LPARAM lInitParam)
 {

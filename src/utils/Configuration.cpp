@@ -1,4 +1,4 @@
-#include "utils/Configuration.h"
+#include <utils/Configuration.h>
 
 Configuration::Configuration(const WCHAR* name, Type type)
 {

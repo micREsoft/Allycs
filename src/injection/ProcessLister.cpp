@@ -1,7 +1,7 @@
-#include "injection/ProcessLister.h"
-#include "utils/SystemInformation.h"
-#include "utils/Logger.h"
-#include "core/ProcessAccessHelp.h"
+#include <injection/ProcessLister.h>
+#include <utils/SystemInformation.h>
+#include <utils/Logger.h>
+#include <core/ProcessAccessHelp.h>
 #include <algorithm>
 
 //#define DEBUG_COMMENTS
@@ -62,7 +62,7 @@ DWORD ProcessLister::setDebugPrivileges()
 		err = GetLastError();  
 		if(hToken) 
         {
-            SysClose(hToken);
+            SysIndirectClose(hToken);
         }
 		return err;
 	}
@@ -72,7 +72,7 @@ DWORD ProcessLister::setDebugPrivileges()
 
 	AdjustTokenPrivileges(hToken, false, &Debug_Privileges, 0, NULL, NULL);
 
-	SysClose(hToken);
+	SysIndirectClose(hToken);
 	return GetLastError();
 }
 
@@ -173,7 +173,7 @@ std::vector<Process>& ProcessLister::getProcessListSnapshotNative()
         processList.reserve(34);
     }
 
-    NTSTATUS status = SysQuerySystemInformation(
+    NTSTATUS status = SysIndirectQuerySystemInformation(
         SystemProcessInformation, 
         pBuffer, 
         bufferLength, 
@@ -188,7 +188,7 @@ std::vector<Process>& ProcessLister::getProcessListSnapshotNative()
         if (!pBuffer)
             return processList;
 
-        status = SysQuerySystemInformation(
+        status = SysIndirectQuerySystemInformation(
             SystemProcessInformation, 
             pBuffer, 
             bufferLength, 
@@ -265,7 +265,7 @@ void ProcessLister::handleProcessInformationAndAddToList(PSYSTEM_PROCESS_INFORMA
 
             processList.push_back(process);
         }
-        SysClose(hProcess);
+        SysIndirectClose(hProcess);
     }
 }
 
@@ -295,7 +295,7 @@ DWORD_PTR ProcessLister::getPebAddressFromProcess(HANDLE hProcess)
         void * PebAddress = nullptr;
         PROCESS_BASIC_INFORMATION myProcessBasicInformation[5]{};
 
-        NTSTATUS status = SysQueryInformationProcess(
+        NTSTATUS status = SysIndirectQueryInformationProcess(
             hProcess, 
             ProcessBasicInformation, 
             myProcessBasicInformation, 
@@ -309,7 +309,7 @@ DWORD_PTR ProcessLister::getPebAddressFromProcess(HANDLE hProcess)
         }
         else
         {
-            status = SysQueryInformationProcess(
+            status = SysIndirectQueryInformationProcess(
                 hProcess, 
                 ProcessBasicInformation, 
                 myProcessBasicInformation, 

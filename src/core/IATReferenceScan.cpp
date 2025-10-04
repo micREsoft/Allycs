@@ -1,6 +1,6 @@
-#include "core/IATReferenceScan.h"
-#include "app/Allycs.h"
-#include "core/Architecture.h"
+#include <core/IATReferenceScan.h>
+#include <app/Allycs.h>
+#include <core/Architecture.h>
 #include <set>
 
 //#define DEBUG_COMMENTS
@@ -71,7 +71,7 @@ void IATReferenceScan::startScan(DWORD_PTR imageBase, DWORD imageSize, DWORD_PTR
 
 	while (section < imageBase + imageSize)
 	{
-		NTSTATUS status = SysQueryVirtualMemory(
+		NTSTATUS status = SysIndirectQueryVirtualMemory(
 			ProcessAccessHelp::hProcess,
 			reinterpret_cast<PVOID>(section),
 			MemoryBasicInformation,
@@ -83,7 +83,7 @@ void IATReferenceScan::startScan(DWORD_PTR imageBase, DWORD imageSize, DWORD_PTR
 		if (!NT_SUCCESS(status))
 		{
 #ifdef DEBUG_COMMENTS
-			Allycs::debugLog.log(L"SysQueryVirtualMemory failed with status 0x%X", status);
+			Allycs::debugLog.log(L"SysIndirectQueryVirtualMemory failed with status 0x%X", status);
 #endif
 			break;
 		}
@@ -286,7 +286,7 @@ bool IATReferenceScan::isAddressValidImageMemory(DWORD_PTR address)
 {
 	MEMORY_BASIC_INFORMATION memBasic{};
 
-	NTSTATUS status = SysQueryVirtualMemory(
+	NTSTATUS status = SysIndirectQueryVirtualMemory(
 		ProcessAccessHelp::hProcess,
 		reinterpret_cast<PVOID>(address),
 		MemoryBasicInformation,

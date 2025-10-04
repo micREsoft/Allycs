@@ -1,7 +1,7 @@
-#include "app/Allycs.h"
-#include "core/AllycsApi.h"
-#include "utils/SystemInformation.h"
-#include "core/ProcessAccessHelp.h"
+#include <app/Allycs.h>
+#include <core/AllycsApi.h>
+#include <utils/SystemInformation.h>
+#include <core/ProcessAccessHelp.h>
 
 ConfigurationHolder Allycs::config(L"Allycs.ini");
 PluginLoader Allycs::plugins;
@@ -16,17 +16,21 @@ ListboxLog Allycs::windowLog;
 void Allycs::initAsGuiApp()
 {
 	// First initialize the API layer
-	AllycsApi::initialize();
-	
+	if (!AllycsApi::initialize())
+	{
+		// Handle initialization failure - could log error or exit
+		return;
+	}
+
 	// Then load configuration
 	config.loadConfiguration();
-	
+
 	// Get system information before loading plugins
 	SystemInformation::getSystemInformation();
-	
+
 	// Load modules list before plugins
 	ProcessAccessHelp::getProcessModules(GetCurrentProcess(), ProcessAccessHelp::ownModuleList);
-	
+
 	// Now it's safe to find plugins
 	plugins.findAllPlugins();
 
@@ -38,8 +42,16 @@ void Allycs::initAsGuiApp()
 
 void Allycs::initAsDll()
 {
-	AllycsApi::initialize();
+	if (!AllycsApi::initialize())
+	{
+		return; // Handle initialization failure
+	}
 	ProcessAccessHelp::ownModuleList.clear();
 	SystemInformation::getSystemInformation();
 	ProcessAccessHelp::getProcessModules(GetCurrentProcess(), ProcessAccessHelp::ownModuleList);
+}
+
+void Allycs::cleanup()
+{
+	AllycsApi::cleanup();
 }

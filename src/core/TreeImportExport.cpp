@@ -1,7 +1,7 @@
-#include "core/TreeImportExport.h"
-#include "core/Architecture.h"
-#include "app/Allycs.h"
-#include "utils/StringConversion.h"
+#include <core/TreeImportExport.h>
+#include <core/Architecture.h>
+#include <app/Allycs.h>
+#include <utils/StringConversion.h>
 
 using namespace tinyxml2;
 

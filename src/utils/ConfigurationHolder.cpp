@@ -1,6 +1,6 @@
-#include "utils/ConfigurationHolder.h"
+#include <utils/ConfigurationHolder.h>
 #include <shlwapi.h>
-#include "core/Architecture.h"
+#include <core/Architecture.h>
 
 const WCHAR ConfigurationHolder::CONFIG_FILE_SECTION_NAME[] = L"ALLYCS_CONFIG";
 

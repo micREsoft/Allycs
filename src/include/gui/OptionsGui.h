@@ -1,7 +1,7 @@
 #pragma once
 
 #include <syscaller.h>
-#include "app/resource.h"
+#include <app/resource.h>
 
 // WTL
 #include <atlbase.h>       // base ATL classes

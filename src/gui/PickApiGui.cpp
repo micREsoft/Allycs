@@ -1,5 +1,4 @@
-#include "gui/PickApiGui.h"
-
+#include <gui/PickApiGui.h>
 #include <atlconv.h> // string conversion
 
 PickApiGui::PickApiGui(const std::vector<ModuleInfo> &moduleList) : moduleList(moduleList)

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../syscaller.h"
+#include <syscaller.h>
 
 // ALLYCS STRUCTS
 

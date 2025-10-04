@@ -126,7 +126,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>GeneratedFiles\$(ConfigurationName);GeneratedFiles;C:\Users\devil\source\repos\Allycs\sdk\SysCaller\include;C:\Users\devil\source\repos\Allycs\src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(PROJECTDIR)sdk\SysCaller\include;$(PROJECTDIR)src\include;$(VCPKG_ROOT)\installed\x64-windows-static\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -135,9 +135,9 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SysCaller.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SysCaller.lib;distorm.lib;tinyxml2.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalManifestDependencies>type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' </AdditionalManifestDependencies>
-      <AdditionalLibraryDirectories>C:\Users\devil\source\repos\Allycs\sdk\SysCaller\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(PROJECTDIR)sdk\SysCaller\lib;$(VCPKG_ROOT)\installed\x64-windows-static\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -179,7 +179,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>GeneratedFiles\$(ConfigurationName);GeneratedFiles;C:\Users\devil\source\repos\Allycs\sdk\SysCaller\include;C:\Users\devil\source\repos\Allycs\src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(PROJECTDIR)sdk\SysCaller\include;$(PROJECTDIR)src\include;$(VCPKG_ROOT)\installed\x64-windows-static\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MinimalRebuild>false</MinimalRebuild>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -188,14 +188,14 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>SysCaller.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SysCaller.lib;distorm.lib;tinyxml2.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalManifestDependencies>type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' </AdditionalManifestDependencies>
       <EntryPointSymbol>
       </EntryPointSymbol>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
       <GenerateMapFile>false</GenerateMapFile>
-      <AdditionalLibraryDirectories>C:\Users\devil\source\repos\Allycs\sdk\SysCaller\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(PROJECTDIR)sdk\SysCaller\lib;$(VCPKG_ROOT)\installed\x64-windows-static\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
@@ -234,6 +234,10 @@
     <ClCompile Include="src\core\TreeImportExport.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="sdk\SysCaller\include\Resolver\PebUtils.h" />
+    <ClInclude Include="sdk\SysCaller\include\Resolver\Resolver.h" />
+    <ClInclude Include="sdk\SysCaller\include\Resolver\ResolverBase.h" />
+    <ClInclude Include="sdk\SysCaller\include\syscaller_config.h" />
     <ClInclude Include="src\app\resource.h" />
     <ClInclude Include="src\include\gui\AboutGui.h" />
     <ClInclude Include="src\include\core\ApiReader.h" />

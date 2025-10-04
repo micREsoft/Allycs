@@ -1,9 +1,9 @@
 //#include <vld.h> // Visual Leak Detector
 #include <atlbase.h>       // base ATL classes
 #include <atlapp.h>        // base WTL classes
-#include "core/Architecture.h"
-#include "app/MainGui.h"
-#include "app/Allycs.h"
+#include <core/Architecture.h>
+#include <app/MainGui.h>
+#include <app/Allycs.h>
 
 CAppModule _Module;
 MainGui* pMainGui = NULL; // for Logger
@@ -61,6 +61,9 @@ int InitializeGui(HINSTANCE hInstance, LPARAM param)
 	_Module.Term();
 	CoUninitialize();
 
+	// Cleanup SysCaller resources
+	Allycs::cleanup();
+
 	return nRet;
 }
 
@@ -95,6 +98,7 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 	case DLL_PROCESS_DETACH:
 		// Perform any necessary cleanup.
 		RemoveExceptionHandler();
+		Allycs::cleanup();
 		break;
 	}
 	return TRUE;  // Successful DLL_PROCESS_ATTACH.

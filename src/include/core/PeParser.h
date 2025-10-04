@@ -2,7 +2,7 @@
 
 #include <syscaller.h>
 #include <vector>
-#include "gui/DumpSectionGui.h"
+#include <gui/DumpSectionGui.h>
 
 class PeFileSection {
 public:

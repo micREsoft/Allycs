@@ -1,7 +1,7 @@
-#include "core/ProcessAccessHelp.h"
-#include "app/Allycs.h"
-#include "core/AllycsApi.h"
-#include "core/PeParser.h"
+#include <core/ProcessAccessHelp.h>
+#include <app/Allycs.h>
+#include <core/AllycsApi.h>
+#include <core/PeParser.h>
 
 HANDLE ProcessAccessHelp::hProcess = 0;
 
@@ -76,7 +76,7 @@ HANDLE ProcessAccessHelp::AllycsOpenProcess(DWORD dwDesiredAccess, DWORD dwProce
 	InitializeObjectAttributes(&ObjectAttributes, 0, 0, 0, 0);
 	cid.UniqueProcess = reinterpret_cast<HANDLE>(dwProcessId);
 
-	ntStatus = SysOpenProcess(
+	ntStatus = SysIndirectOpenProcess(
 		&hProcess,
 		dwDesiredAccess,
 		&ObjectAttributes, 
@@ -100,7 +100,7 @@ void ProcessAccessHelp::closeProcessHandle()
 {
 	if (hProcess)
 	{
-		SysClose(hProcess);
+		SysIndirectClose(hProcess);
 		hProcess = 0;
 	}
 
@@ -131,7 +131,7 @@ bool ProcessAccessHelp::readMemoryPartlyFromProcess(DWORD_PTR address, SIZE_T si
 
 		do 
 		{
-			NTSTATUS status = SysQueryVirtualMemory(
+			NTSTATUS status = SysIndirectQueryVirtualMemory(
                 ProcessAccessHelp::hProcess,
                 reinterpret_cast<PVOID>(addressPart),
                 MemoryBasicInformation,
@@ -143,7 +143,7 @@ bool ProcessAccessHelp::readMemoryPartlyFromProcess(DWORD_PTR address, SIZE_T si
 			if (!NT_SUCCESS(status))
 			{
 #ifdef DEBUG_COMMENTS
-				Allycs::debugLog.log(L"readMemoryPartlyFromProcess :: Error SysQueryVirtualMemory %X %X err: %u", addressPart, size, GetLastError());
+				Allycs::debugLog.log(L"readMemoryPartlyFromProcess :: Error SysIndirectQueryVirtualMemory %X %X err: %u", addressPart, size, GetLastError());
 #endif
 				break;
 			}
@@ -225,7 +225,7 @@ bool ProcessAccessHelp::readMemoryFromProcess(DWORD_PTR address, SIZE_T size, LP
 		PVOID baseAddress = reinterpret_cast<PVOID>(address);
 		SIZE_T regionSize = size;
 		
-		NTSTATUS status = SysProtectVirtualMemory(
+		NTSTATUS status = SysIndirectProtectVirtualMemory(
 			hProcess, 
 			&baseAddress, 
 			&regionSize, 
@@ -236,7 +236,7 @@ bool ProcessAccessHelp::readMemoryFromProcess(DWORD_PTR address, SIZE_T size, LP
 		if (!NT_SUCCESS(status))
 		{
 #ifdef DEBUG_COMMENTS
-			Allycs::debugLog.log(L"readMemoryFromProcess :: Error SysProtectVirtualMemory %X %X err: %u", address, size, GetLastError());
+			Allycs::debugLog.log(L"readMemoryFromProcess :: Error SysIndirectProtectVirtualMemory %X %X err: %u", address, size, GetLastError());
 #endif
 			returnValue = false;
 		}
@@ -257,7 +257,7 @@ bool ProcessAccessHelp::readMemoryFromProcess(DWORD_PTR address, SIZE_T size, LP
 			baseAddress = reinterpret_cast<PVOID>(address);
 			regionSize = size;
 			
-			NTSTATUS restoreStatus = SysProtectVirtualMemory(
+			NTSTATUS restoreStatus = SysIndirectProtectVirtualMemory(
 				hProcess, 
 				&baseAddress, 
 				&regionSize, 
@@ -398,7 +398,7 @@ LONGLONG ProcessAccessHelp::getFileSize(const WCHAR * filePath)
 	if (hFile != INVALID_HANDLE_VALUE)
 	{
 		fileSize = getFileSize(hFile);
-		SysClose(hFile);
+		SysIndirectClose(hFile);
 	}
 	
 	return fileSize;
@@ -481,7 +481,7 @@ bool ProcessAccessHelp::writeMemoryToNewFile(const WCHAR * file,DWORD size, LPCV
 	if (hFile != INVALID_HANDLE_VALUE)
 	{
 		bool resultValue = writeMemoryToFile(hFile,0,size,dataBuffer);
-		SysClose(hFile);
+		SysIndirectClose(hFile);
 		return resultValue;
 	}
 	else
@@ -596,7 +596,7 @@ bool ProcessAccessHelp::readHeaderFromFile(BYTE * buffer, DWORD bufferSize, cons
 			returnValue = readMemoryFromFile(hFile, 0, dwSize, buffer);
 		}
 
-		SysClose(hFile);
+		SysIndirectClose(hFile);
 	}
 
 	return returnValue;
@@ -625,7 +625,7 @@ LPVOID ProcessAccessHelp::createFileMappingView(const WCHAR * filePath, DWORD ac
 	}
 
 	HANDLE hMappedFile = CreateFileMapping(hFile, NULL, flProtect, 0, 0, NULL);
-	SysClose(hFile);
+	SysIndirectClose(hFile);
 
 	if( hMappedFile == NULL )
 	{
@@ -640,7 +640,7 @@ LPVOID ProcessAccessHelp::createFileMappingView(const WCHAR * filePath, DWORD ac
 #ifdef DEBUG_COMMENTS
 		Allycs::debugLog.log(L"createFileMappingView :: GetLastError() == ERROR_ALREADY_EXISTS");
 #endif
-		SysClose(hMappedFile);
+		SysIndirectClose(hMappedFile);
 		return NULL;
 	}
 
@@ -651,11 +651,11 @@ LPVOID ProcessAccessHelp::createFileMappingView(const WCHAR * filePath, DWORD ac
 #ifdef DEBUG_COMMENTS
 		Allycs::debugLog.log(L"createFileMappingView :: addrMappedDll == NULL");
 #endif
-		SysClose(hMappedFile);
+		SysIndirectClose(hMappedFile);
 		return NULL;
 	}
 
-	SysClose(hMappedFile);
+	SysIndirectClose(hMappedFile);
 
 	return addrMappedDll;
 }
@@ -672,7 +672,7 @@ DWORD ProcessAccessHelp::getProcessByName(const WCHAR * processName)
 #ifdef DEBUG_COMMENTS
 		Allycs::debugLog.log(L"getProcessByName :: Error getting first Process");
 #endif
-		SysClose( hProcessSnap );
+		SysIndirectClose( hProcessSnap );
 		return 0;
 	}
 
@@ -685,7 +685,7 @@ DWORD ProcessAccessHelp::getProcessByName(const WCHAR * processName)
 		}
 	} while(Process32NextW(hProcessSnap, &pe32));
 
-	SysClose(hProcessSnap);
+	SysIndirectClose(hProcessSnap);
 
 	return dwPID;
 }
@@ -749,7 +749,7 @@ bool ProcessAccessHelp::getMemoryRegionFromAddress(DWORD_PTR address, DWORD_PTR 
 {
 	MEMORY_BASIC_INFORMATION memBasic{};
 
-    NTSTATUS status = SysQueryVirtualMemory(
+    NTSTATUS status = SysIndirectQueryVirtualMemory(
         hProcess,
         reinterpret_cast<PVOID>(address),
         MemoryBasicInformation,
@@ -761,7 +761,7 @@ bool ProcessAccessHelp::getMemoryRegionFromAddress(DWORD_PTR address, DWORD_PTR 
 	if (!NT_SUCCESS(status))
 	{
 #ifdef DEBUG_COMMENTS
-		Allycs::debugLog.log(L"getMemoryRegionFromAddress :: SysQueryVirtualMemory error %u", GetLastError());
+		Allycs::debugLog.log(L"getMemoryRegionFromAddress :: SysIndirectQueryVirtualMemory error %u", GetLastError());
 #endif
 		return false;
 	}
@@ -810,7 +810,7 @@ SIZE_T ProcessAccessHelp::getSizeOfImageProcess(HANDLE processHandle, DWORD_PTR 
 		moduleBase = (DWORD_PTR)((SIZE_T)moduleBase + lpBuffer.RegionSize);
 		sizeOfImage += lpBuffer.RegionSize;
 
-        NTSTATUS status = SysQueryVirtualMemory(
+        NTSTATUS status = SysIndirectQueryVirtualMemory(
             processHandle,
             reinterpret_cast<PVOID>(moduleBase),
             MemoryBasicInformation,
@@ -822,7 +822,7 @@ SIZE_T ProcessAccessHelp::getSizeOfImageProcess(HANDLE processHandle, DWORD_PTR 
 		if (!NT_SUCCESS(status))
 		{
 #ifdef DEBUG_COMMENTS
-			Allycs::debugLog.log(L"getSizeOfImageProcess :: SysQueryVirtualMemory failed %X", GetLastError());
+			Allycs::debugLog.log(L"getSizeOfImageProcess :: SysIndirectQueryVirtualMemory failed %X", GetLastError());
 #endif
 			lpBuffer.Type = 0;
 			sizeOfImage = 0;
@@ -919,28 +919,28 @@ void ProcessAccessHelp::setCurrentProcessAsTarget()
 
 bool ProcessAccessHelp::suspendProcess()
 {
-	if (!SysSuspendProcess || !ProcessAccessHelp::hProcess)
+	if (!SysIndirectSuspendProcess || !ProcessAccessHelp::hProcess)
 		return false;
 
-	NTSTATUS status = SysSuspendProcess(ProcessAccessHelp::hProcess);
+	NTSTATUS status = SysIndirectSuspendProcess(ProcessAccessHelp::hProcess);
 	return NT_SUCCESS(status);
 }
 
 bool ProcessAccessHelp::resumeProcess()
 {
-	if (!SysResumeProcess || !ProcessAccessHelp::hProcess)
+	if (!SysIndirectResumeProcess || !ProcessAccessHelp::hProcess)
 		return false;
 
-	NTSTATUS status = SysResumeProcess(ProcessAccessHelp::hProcess);
+	NTSTATUS status = SysIndirectResumeProcess(ProcessAccessHelp::hProcess);
 	return NT_SUCCESS(status);
 }
 
 bool ProcessAccessHelp::terminateProcess()
 {
-	if (!SysTerminateProcess || !ProcessAccessHelp::hProcess)
+	if (!SysIndirectTerminateProcess || !ProcessAccessHelp::hProcess)
 		return false;
 
-	NTSTATUS status = SysTerminateProcess(ProcessAccessHelp::hProcess, 0);
+	NTSTATUS status = SysIndirectTerminateProcess(ProcessAccessHelp::hProcess, 0);
 	return NT_SUCCESS(status);
 }
 
@@ -995,7 +995,7 @@ SIZE_T ProcessAccessHelp::getSizeOfImageProcessAllycs(HANDLE processHandle, DWOR
 	MEMORY_BASIC_INFORMATION mbi{};
 	SIZE_T retLen = 0;
 
-	NTSTATUS status = SysQueryVirtualMemory(
+	NTSTATUS status = SysIndirectQueryVirtualMemory(
 		processHandle,
 		reinterpret_cast<PVOID>(moduleBase),
 		MemoryBasicInformation,  // use standard struct

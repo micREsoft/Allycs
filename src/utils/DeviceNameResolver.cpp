@@ -1,5 +1,5 @@
-#include "utils/DeviceNameResolver.h"
-#include "core/AllycsApi.h"
+#include <utils/DeviceNameResolver.h>
+#include <core/AllycsApi.h>
 
 DeviceNameResolver::DeviceNameResolver()
 {
@@ -79,7 +79,7 @@ void DeviceNameResolver::fixVirtualDevices()
         AllycsApi::RtlInitUnicodeString(&unicodeInput, longCopy);
         InitializeObjectAttributes(&oa, &unicodeInput, 0, 0, 0);
 
-        NTSTATUS status = SysOpenSymbolicLinkObject(
+        NTSTATUS status = SysIndirectOpenSymbolicLinkObject(
             &hFile, 
             SYMBOLIC_LINK_QUERY, 
             reinterpret_cast<POBJECT_ATTRIBUTES>(&oa)
@@ -91,7 +91,7 @@ void DeviceNameResolver::fixVirtualDevices()
             unicodeOutput.MaximumLength = unicodeOutput.Length;
             ZeroMemory(unicodeOutput.Buffer, unicodeOutput.Length);
 
-            status = SysQuerySymbolicLinkObject(
+            status = SysIndirectQuerySymbolicLinkObject(
                 hFile, 
                 reinterpret_cast<PUNICODE_STRING>(&unicodeOutput), 
                 &retLen
@@ -105,7 +105,7 @@ void DeviceNameResolver::fixVirtualDevices()
                 deviceNameList.push_back(hardDisk);
             }  
 
-            SysClose(hFile);
+            SysIndirectClose(hFile);
         }
     }
 

@@ -1,19 +1,19 @@
-#include "app/MainGui.h"
-#include "core/Architecture.h"
+#include <app/MainGui.h>
+#include <core/Architecture.h>
 //#include "PluginLoader.h"
 //#include "ConfigurationHolder.h"
-#include "core/PeParser.h"
-#include "plugins/DllInjectionPlugin.h"
-#include "gui/DisassemblerGui.h"
-#include "gui/PickApiGui.h"
+#include <core/PeParser.h>
+#include <plugins/DllInjectionPlugin.h>
+#include <gui/DisassemblerGui.h>
+#include <gui/PickApiGui.h>
 //#include "AllycsApi.h"
-#include "core/ImportRebuilder.h"
-#include "utils/SystemInformation.h"
-#include "app/Allycs.h"
-#include "gui/AboutGui.h"
-#include "gui/DonateGui.h"
-#include "gui/OptionsGui.h"
-#include "core/TreeImportExport.h"
+#include <core/ImportRebuilder.h>
+#include <utils/SystemInformation.h>
+#include <app/Allycs.h>
+#include <gui/AboutGui.h>
+#include <gui/DonateGui.h>
+#include <gui/OptionsGui.h>
+#include <core/TreeImportExport.h>
 
 extern CAppModule _Module; // o_O
 
@@ -854,7 +854,7 @@ bool MainGui::saveLogToFile(const WCHAR * file)
 			ProcessAccessHelp::writeMemoryToFileEnd(hFile, (DWORD)(size * sizeof(WCHAR)), buffer);
 		}
 		delete[] buffer;
-		SysClose(hFile);
+		SysIndirectClose(hFile);
 	}
 	return success;
 }

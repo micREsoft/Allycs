@@ -1,9 +1,9 @@
 #pragma once
 
 #include <map>
-#include "core/PeParser.h"
-#include "core/Thunks.h"
-#include "core/IATReferenceScan.h"
+#include <core/PeParser.h>
+#include <core/Thunks.h>
+#include <core/IATReferenceScan.h>
 
 
 class ImportRebuilder : public PeParser {

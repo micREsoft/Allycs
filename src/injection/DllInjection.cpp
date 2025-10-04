@@ -1,7 +1,7 @@
-#include "injection/DllInjection.h"
-#include "app/Allycs.h"
-#include "core/AllycsApi.h"
-#include "core/ProcessAccessHelp.h"
+#include <injection/DllInjection.h>
+#include <app/Allycs.h>
+#include <core/AllycsApi.h>
+#include <core/ProcessAccessHelp.h>
 #pragma comment(lib, "Psapi.lib")
 
 // Define ThreadHideFromDebugger if not already defined
@@ -30,7 +30,7 @@
 
 		remoteMemory = nullptr;
 		SIZE_T regionSize = memorySize;
-		NTSTATUS status = SysAllocateVirtualMemoryEx(
+		NTSTATUS status = SysIndirectAllocateVirtualMemoryEx(
 			hProcess, 
 			reinterpret_cast<PVOID*>(&remoteMemory), 
 			&regionSize, 
@@ -71,7 +71,7 @@
 				}
 #endif
 
-				SysClose(hThread);
+				SysIndirectClose(hThread);
 			}
 			else
 			{
@@ -90,7 +90,7 @@
 		regionSize = 0;
 		PVOID baseAddress = remoteMemory;
 		
-		NTSTATUS freeStatus = SysFreeVirtualMemory(
+		NTSTATUS freeStatus = SysIndirectFreeVirtualMemory(
 			hProcess, 
 			&baseAddress, 
 			&regionSize, 
@@ -99,7 +99,7 @@
 		
 #ifdef DEBUG_COMMENTS
 		if (!NT_SUCCESS(freeStatus)) {
-			Allycs::debugLog.log(L"dllInjection :: SysFreeVirtualMemory failed 0x%X", AllycsApi::NtStatusToErrorTranslator(freeStatus));
+			Allycs::debugLog.log(L"dllInjection :: SysIndirectFreeVirtualMemory failed 0x%X", AllycsApi::NtStatusToErrorTranslator(freeStatus));
 		}
 #endif
 
@@ -126,7 +126,7 @@
 				freeLibraryRet = 0;
 			}
 
-			SysClose(hThread);
+			SysIndirectClose(hThread);
 		}
 		else
 		{
@@ -191,9 +191,9 @@
 #endif
 			}
 
-			if (SysSetInformationThread)
+			if (SysIndirectSetInformationThread)
 			{
-				NTSTATUS status = SysSetInformationThread(
+				NTSTATUS status = SysIndirectSetInformationThread(
 					hThread, 
 					ThreadHideFromDebugger, 
 					0, // Use 0 instead of nullptr for SIZE_T
@@ -203,7 +203,7 @@
 				if (!NT_SUCCESS(status))
 				{
 #ifdef DEBUG_COMMENTS
-					Allycs::debugLog.log(L"specialThreadSettings :: SysSetInformationThread ThreadHideFromDebugger failed 0x%X", AllycsApi::NtStatusToErrorTranslator(status));
+					Allycs::debugLog.log(L"specialThreadSettings :: SysIndirectSetInformationThread ThreadHideFromDebugger failed 0x%X", AllycsApi::NtStatusToErrorTranslator(status));
 #endif
 				}
 			}
@@ -231,12 +231,12 @@
 		HANDLE hThread = nullptr;
 		NTSTATUS ntStatus = 0;
 
-		if (SysCreateThreadEx)
+		if (SysIndirectCreateThreadEx)
 		{
 			#define THREAD_ALL_ACCESS_VISTA_7 (STANDARD_RIGHTS_REQUIRED | SYNCHRONIZE | 0xFFFF)
 
 			//for windows vista/7
-			ntStatus = SysCreateThreadEx(
+			ntStatus = SysIndirectCreateThreadEx(
 				&hThread, 
 				THREAD_ALL_ACCESS_VISTA_7, 
 				0, // ObjectAttributes - use 0 instead of nullptr for SIZE_T

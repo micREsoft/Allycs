@@ -15,6 +15,10 @@
 
 typedef LONG KPRIORITY;
 
+// SysCaller DLL function types for indirect syscalls
+typedef BOOL(WINAPI* InitializeResolver_t)();
+typedef VOID(WINAPI* CleanupResolver_t)();
+
 ///////////////////////////////////////////////////////////////////////////////////////
 //Evolution of Process Environment Block (PEB) http://blog.rewolf.pl/blog/?p=573
 //March 2, 2013 / ReWolf posted in programming, reverse engineering, source code, x64 /
@@ -119,13 +123,18 @@ public:
 
 	static def_NtErrTranslator NtStatusToErrorTranslator;
 
+	static HMODULE hSysCallerDll;
+	static InitializeResolver_t InitializeResolver;
+	static CleanupResolver_t CleanupResolver;
+
 	static void RtlInitUnicodeString(PUNICODE_STRING_ALLYCS DestinationString, PWSTR SourceString)
 	{
 		DestinationString->Buffer = SourceString;
 		DestinationString->MaximumLength = DestinationString->Length = (USHORT)wcslen(SourceString) * sizeof(WCHAR);
 	}
 
-	static void initialize();
+	static bool initialize();
+	static void cleanup();
 
 	static PPEB getCurrentProcessEnvironmentBlock();
 	static PPEB getProcessEnvironmentBlockAddress(HANDLE processHandle);
